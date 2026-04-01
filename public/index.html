@@ -101,21 +101,26 @@
           </p>
           <dl class="links">
             <dt>Subscribe (HTTPS)</dt>
-            <dd>
-              <code id="out-subscribe"></code>
+            <dd class="link-block">
+              <input type="text" readonly class="link-field" id="out-subscribe" value="" spellcheck="false" />
               <button type="button" class="copy" data-copy="out-subscribe">Copy</button>
             </dd>
             <dt>Webcal (some apps)</dt>
-            <dd>
-              <code id="out-webcal"></code>
+            <dd class="link-block">
+              <input type="text" readonly class="link-field" id="out-webcal" value="" spellcheck="false" />
               <button type="button" class="copy" data-copy="out-webcal">Copy</button>
             </dd>
             <dt>Manage key (private)</dt>
-            <dd>
-              <code id="out-manage" class="secret"></code>
+            <dd class="link-block">
+              <input type="text" readonly class="link-field link-field-secret" id="out-manage" value="" spellcheck="false" />
               <button type="button" class="copy" data-copy="out-manage">Copy</button>
             </dd>
           </dl>
+          <div class="plain-text-block">
+            <p class="plain-text-label">All links as plain text (select below or use Copy all)</p>
+            <textarea id="printable-links" readonly class="printable-text" rows="8" spellcheck="false"></textarea>
+            <button type="button" class="secondary" id="copy-all-btn">Copy all</button>
+          </div>
           <div class="icloud-actions hidden" id="icloud-actions">
             <p class="hint">iCloud sync is on. New or edited events usually appear after the next automatic sync (every few minutes) or immediately if you sync now.</p>
             <button type="button" class="secondary" id="sync-now-btn">Sync now from iCloud</button>

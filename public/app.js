@@ -21,18 +21,81 @@ function toast(msg) {
   setTimeout(() => el.remove(), 2200);
 }
 
+/** Read value from an input/textarea or text from other nodes. */
+function getCopyValue(el) {
+  if (!el) return '';
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+    return el.value.trim();
+  }
+  return el.textContent.trim();
+}
+
+/**
+ * Clipboard API when available; fallback for http / file / strict browsers.
+ */
+async function copyTextToClipboard(text) {
+  if (text == null || text === '') return false;
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      /* try fallback */
+    }
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '0';
+  ta.style.top = '0';
+  ta.style.opacity = '0';
+  ta.style.pointerEvents = 'none';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try {
+    ok = document.execCommand('copy');
+  } finally {
+    document.body.removeChild(ta);
+  }
+  return ok;
+}
+
+function buildPlainTextSummary(subscribeUrl, webcalUrl, manageLine) {
+  const lines = [
+    'Subscribe (HTTPS):',
+    subscribeUrl || '',
+    '',
+    'Webcal:',
+    webcalUrl || '',
+    '',
+    'Manage key (private — keep secret):',
+    manageLine || '',
+  ];
+  return lines.join('\n');
+}
+
 function showResult(data, { isUpdate, icloudSync }) {
   result.classList.remove('hidden');
-  document.getElementById('out-subscribe').textContent = data.subscribeUrl || '';
-  document.getElementById('out-webcal').textContent = data.webcalUrl || '';
-
+  const sub = data.subscribeUrl || '';
+  const web = data.webcalUrl || '';
+  let manageLine;
   if (!isUpdate && data.manageKey) {
-    document.getElementById('out-manage').textContent = data.manageKey;
+    manageLine = data.manageKey;
   } else if (isUpdate) {
-    document.getElementById('out-manage').textContent = '(unchanged — use saved key)';
+    manageLine = '(unchanged — use the manage key you saved earlier)';
   } else {
-    document.getElementById('out-manage').textContent = data.manageKey || '';
+    manageLine = data.manageKey || '';
   }
+
+  document.getElementById('out-subscribe').value = sub;
+  document.getElementById('out-webcal').value = web;
+  document.getElementById('out-manage').value = manageLine;
+
+  document.getElementById('printable-links').value = buildPlainTextSummary(sub, web, manageLine);
 
   let meta = '';
   if (typeof data.eventCount === 'number') {
@@ -55,20 +118,26 @@ function showResult(data, { isUpdate, icloudSync }) {
 document.querySelectorAll('button.copy').forEach((btn) => {
   btn.addEventListener('click', async () => {
     const id = btn.getAttribute('data-copy');
-    const code = document.getElementById(id);
-    if (!code) return;
-    const text = code.textContent.trim();
+    const el = document.getElementById(id);
+    const text = getCopyValue(el);
     if (!text || text.startsWith('(')) {
       toast('Nothing to copy');
       return;
     }
-    try {
-      await navigator.clipboard.writeText(text);
-      toast('Copied');
-    } catch {
-      toast('Could not copy');
-    }
+    const ok = await copyTextToClipboard(text);
+    toast(ok ? 'Copied' : 'Select the field and press ⌘C / Ctrl+C');
   });
+});
+
+document.getElementById('copy-all-btn').addEventListener('click', async () => {
+  const ta = document.getElementById('printable-links');
+  const text = ta.value.trim();
+  if (!text) {
+    toast('Nothing to copy');
+    return;
+  }
+  const ok = await copyTextToClipboard(text);
+  toast(ok ? 'Copied all' : 'Select the box below and press ⌘C / Ctrl+C');
 });
 
 syncNowBtn.addEventListener('click', async () => {

@@ -262,13 +262,76 @@ button.copy:hover {
   word-break: break-all;
 }
 
-.links code {
-  font-size: 0.8rem;
-  color: var(--accent-dim);
+.link-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
 }
 
-code.secret {
+.link-field {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--accent-dim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.link-field:focus {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.link-field-secret {
   color: var(--text);
+}
+
+.links .copy {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-left: 0;
+}
+
+.plain-text-block {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.plain-text-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+}
+
+.printable-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 0.85rem;
+  margin: 0 0 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.printable-text:focus {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+#copy-all-btn {
+  margin-top: 0;
 }
 
 .meta {
