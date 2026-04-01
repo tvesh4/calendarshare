@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CalendarShare — busy times only</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <p class="eyebrow">Privacy-first availability</p>
+        <h1>Share when you’re busy—nothing else</h1>
+        <p class="lede">
+          <strong>Automatic:</strong> connect iCloud with an app-specific password and this server will
+          re-fetch your calendars every few minutes. <strong>Manual:</strong> upload an
+          <code>.ics</code> export. Either way we only publish generic “Busy” blocks—no titles,
+          locations, or notes.
+        </p>
+      </header>
+
+      <main class="grid">
+        <section class="card" id="icloud">
+          <h2>1. Connect iCloud (recommended)</h2>
+          <p class="hint top">
+            Use an <strong>app-specific password</strong> from
+            <a href="https://appleid.apple.com" rel="noopener noreferrer" target="_blank">appleid.apple.com</a>
+            (sign in → Security). Your normal Apple ID password will not work here. The server encrypts
+            the app password at rest; you must set <code>CREDENTIAL_ENCRYPTION_KEY</code> (see README).
+          </p>
+          <form id="icloud-form">
+            <label class="stack">
+              Apple ID (email)
+              <input type="email" name="appleId" autocomplete="username" required placeholder="you@icloud.com" />
+            </label>
+            <label class="stack">
+              App-specific password
+              <input type="password" name="appPassword" autocomplete="off" required />
+            </label>
+            <label class="stack">
+              Calendars to include (optional)
+              <input
+                type="text"
+                name="calendarNames"
+                placeholder="e.g. Work, Family — leave blank for all calendars"
+              />
+            </label>
+            <label class="stack">
+              Manage key (optional)
+              <input
+                type="password"
+                name="manageKey"
+                autocomplete="off"
+                placeholder="Paste only to attach iCloud to an existing share"
+              />
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary" id="icloud-submit">Connect &amp; create share link</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card" id="create">
+          <h2>2. Or upload an .ics file</h2>
+          <form id="upload-form">
+            <label class="file-label">
+              <input type="file" name="calendar" accept=".ics,text/calendar" required />
+              <span class="file-prompt">Choose .ics file</span>
+            </label>
+            <div class="row manage-row hidden" id="manage-row">
+              <label>
+                Manage key (for updates)
+                <input type="password" name="manageKey" id="manage-key" autocomplete="off" placeholder="Paste saved key" />
+              </label>
+            </div>
+            <div class="actions">
+              <button type="submit" class="primary" id="submit-btn">Upload &amp; create link</button>
+              <label class="toggle">
+                <input type="checkbox" id="update-mode" />
+                Update existing share
+              </label>
+            </div>
+          </form>
+          <p class="hint">
+            First time: leave “Update” unchecked. To push a new export to the same subscribe URL, check
+            “Update” and paste your manage key.
+          </p>
+        </section>
+
+        <section class="card hidden" id="result">
+          <h2>Your links</h2>
+          <p class="warning">
+            <strong>Save your manage key somewhere safe</strong> (password manager). It is not shown again
+            on refresh. Anyone with the subscribe link only sees busy times.
+          </p>
+          <dl class="links">
+            <dt>Subscribe (HTTPS)</dt>
+            <dd>
+              <code id="out-subscribe"></code>
+              <button type="button" class="copy" data-copy="out-subscribe">Copy</button>
+            </dd>
+            <dt>Webcal (some apps)</dt>
+            <dd>
+              <code id="out-webcal"></code>
+              <button type="button" class="copy" data-copy="out-webcal">Copy</button>
+            </dd>
+            <dt>Manage key (private)</dt>
+            <dd>
+              <code id="out-manage" class="secret"></code>
+              <button type="button" class="copy" data-copy="out-manage">Copy</button>
+            </dd>
+          </dl>
+          <div class="icloud-actions hidden" id="icloud-actions">
+            <p class="hint">iCloud sync is on. New or edited events usually appear after the next automatic sync (every few minutes) or immediately if you sync now.</p>
+            <button type="button" class="secondary" id="sync-now-btn">Sync now from iCloud</button>
+          </div>
+          <p class="meta" id="out-meta"></p>
+        </section>
+      </main>
+
+      <footer class="foot">
+        <p>
+          Event text is never stored—only busy intervals. iCloud credentials are encrypted on disk; only
+          use a host you trust. See the README for app passwords, encryption setup, and subscribing in
+          Google or Apple Calendar.
+        </p>
+      </footer>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

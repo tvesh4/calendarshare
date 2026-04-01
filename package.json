@@ -1,0 +1,21 @@
+{
+  "name": "calendarshare",
+  "version": "1.0.0",
+  "description": "Share calendar availability (busy times only) via a subscribe link",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.2",
+    "multer": "^2.1.1",
+    "node-ical": "^0.21.0",
+    "rrule": "^2.8.1",
+    "tsdav": "^2.1.8"
+  }
+}
