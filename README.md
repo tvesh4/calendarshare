@@ -1,38 +1,31 @@
-# CalendarShare
+Hi guys, I created this calendar sharing application because it was getting hard for me to catch up with my friends lol. 
+If you want to constantly share your schedule with a partner or close friends, use Calendar share and maintain  your privacy as well. 
 
-Share **when you are busy** with someone—via a link they can add to **Google Calendar** or **Apple Calendar**—without showing **any** of your real event titles, locations, notes, or attendees. Subscribers only see generic **“Busy”** blocks during those times.
+Share only **when** you are busy with someone via a link they can add to **Google Calendar** or **Apple Calendar** without showing **any** of your real event titles, locations, notes, or attendees. Subscribers only see generic **“Busy”** blocks during those times.
 
-## How it works
-
-### Option A — Connect iCloud (automatic)
-
+### Option A — Connect iCloud (constant updates)
 1. You create an **app-specific password** at [appleid.apple.com](https://appleid.apple.com) (your normal Apple ID password is **not** used here).
 2. You enter your Apple ID and that app password in CalendarShare (self-hosted). The server uses Apple’s **CalDAV** API to read your iCloud calendars.
 3. The server **discards** all sensitive fields and keeps only **start/end** busy intervals (same as the `.ics` path). It stores your app password **encrypted** on disk (you must set `CREDENTIAL_ENCRYPTION_KEY`).
 4. A background job **re-fetches** your calendars every **3 minutes** by default (change with `ICLOUD_SYNC_INTERVAL_SEC`). When you add or change an event in Apple Calendar, subscribers see it after the next sync plus their app’s own refresh delay.
 
-### Option B — Upload `.ics` (manual)
-
+### Option B — Upload `.ics` (download the calendar locally then upload)
 1. **Export** a calendar from the Apple Calendar app as `.ics`.
 2. **Upload** it to CalendarShare. The server extracts busy times once per upload.
 3. Send the **subscribe link** to the other person.
 
-**Trust:** iCloud sync means this server holds credentials to your calendar account (encrypted). Only run it on hardware and networks **you** trust. Prefer the `.ics` path if you do not want any server to store Apple access tokens/passwords.
+**Trust:** iCloud sync means this server holds credentials to your calendar account (encrypted). Only run on hardware and networks you trust. Prefer the `.ics` path if you don't want any server to store Apple access tokens/passwords.
 
-## What this app stores
-
+## What this app will store
 - A random **public token** (in the subscribe URL).
 - A secret **manage key** (update the feed, trigger sync, or remove iCloud binding).
-- For each share: **start time**, **end time**, and whether the block is **all‑day**.
+- For each share: **start time**, **end time** and whether the block is **all‑day**.
 
 If iCloud sync is enabled, it also stores your **Apple ID** (plain text for login) and the **app-specific password** (AES-256-GCM ciphertext).
-
 It does **not** store original summaries, descriptions, locations, invitees, or URLs from calendar events.
 
-## Run it locally
-
+## Run locally
 You need [Node.js](https://nodejs.org/) 18 or newer.
-
 **iCloud sync requires a 32-byte encryption key** (64 hex characters). Generate once and keep it stable so existing stored passwords keep working:
 
 ```bash
@@ -76,7 +69,6 @@ npm start
    Use that value—not your iCloud account password.
 
 ## Using the web UI
-
 ### iCloud
 
 1. Set `CREDENTIAL_ENCRYPTION_KEY` and start the server.
